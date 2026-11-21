@@ -1,0 +1,176 @@
+/* The help window (HelpDialog.tsx): a modal <dialog> in the theme's colors. */
+
+.help {
+  box-sizing: border-box;
+  width: min(560px, calc(100vw - 2 * var(--space-4)));
+  max-height: min(80vh, 640px);
+  padding: 0;
+  border: 1px solid var(--menu-border);
+  border-radius: var(--radius-lg);
+  color: var(--fg);
+  background: var(--bg);
+  box-shadow: 0 6px 24px rgb(0 0 0 / 0.3);
+  overflow-y: auto;
+}
+
+.help::backdrop {
+  background: rgb(0 0 0 / 0.35);
+}
+
+/* Stays at the top while the list scrolls under it, so the close button is
+   always there. The dialog's padding is on .help-body, or the content would show
+   through the gap above a sticky header. */
+.help-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4) var(--space-2);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.help-body {
+  padding: 0 var(--space-4) var(--space-4);
+}
+
+.help h2 {
+  margin: 0;
+  font-size: var(--font-size-control);
+  font-weight: 600;
+}
+
+.help-group {
+  margin-top: var(--space-4);
+}
+
+.help h3 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-2);
+  padding-bottom: var(--space-1);
+  border-bottom: 1px solid var(--border);
+  font-size: var(--font-size-label);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.help-here {
+  padding: 0 var(--space-1);
+  border-radius: var(--radius);
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--fg);
+  background: var(--button-bg);
+}
+
+.help-group p {
+  margin: 0 0 var(--space-2);
+  color: var(--fg-muted);
+  font-size: var(--font-size-small);
+}
+
+.help dl {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+}
+
+.help-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 40%) 1fr;
+  gap: var(--space-3);
+  align-items: baseline;
+}
+
+.help-row dt,
+.help-row dd {
+  margin: 0;
+}
+
+.help-alternative {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1);
+  margin-right: var(--space-1);
+}
+
+.help-combo {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.help-or {
+  color: var(--fg-muted);
+  font-size: var(--font-size-small);
+}
+
+.help-gesture {
+  color: var(--fg);
+}
+
+/* A key, wherever one is named: the help window, the hint link, the layer
+   switches. Every property VS Code's default webview style gives a <kbd> (a
+   filled cap with a shadow, 11px) is set here, or an unstyled one would look
+   different from these. */
+kbd {
+  display: inline-block;
+  min-width: 1.4em;
+  box-shadow: none;
+  vertical-align: baseline;
+  box-sizing: border-box;
+  padding: 0 var(--space-1);
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius);
+  font: var(--font-size-small) / 1.5 var(--sans);
+  text-align: center;
+  color: var(--button-fg);
+  background: var(--button-bg);
+}
+
+/* The line in the inspector that says what the keys are, and opens the help. */
+.shortcut-footer {
+  position: sticky;
+  bottom: 0;
+  padding: var(--space-2) var(--space-3);
+  border-top: 1px solid var(--border);
+  background: var(--panel-bg);
+}
+
+.shortcut-hint {
+  margin: 0;
+  color: var(--fg-muted);
+  font-size: var(--font-size-small);
+  line-height: 1.4;
+}
+
+.hint-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: var(--space-1) 0 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  font-size: var(--font-size-small);
+  color: var(--link);
+  background: none;
+  cursor: pointer;
+}
+
+.hint-link:hover {
+  text-decoration: underline;
+}
+
+.hint-link:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 1px;
+}

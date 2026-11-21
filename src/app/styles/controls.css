@@ -1,0 +1,56 @@
+/* Buttons shared by the toolbar, the inspector and the empty grid. */
+
+.icon-button {
+  display: grid;
+  place-items: center;
+  width: var(--control-height);
+  height: var(--control-height);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  color: var(--fg-muted);
+  background: transparent;
+  cursor: pointer;
+}
+
+.icon-button:hover {
+  color: var(--fg);
+  background: var(--button-bg);
+}
+
+.icon-button[aria-pressed="true"] {
+  color: var(--fg);
+}
+
+.icon-button:focus-visible,
+.button:focus-visible,
+.inspector summary:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.button {
+  flex: 1;
+  box-sizing: border-box;
+  min-height: var(--control-height);
+  padding: 0 var(--space-2);
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius);
+  font: inherit;
+  color: var(--button-fg);
+  background: var(--button-bg);
+  cursor: pointer;
+}
+
+.button:hover {
+  background: var(--button-bg-hover);
+}
+
+/* In a high-contrast theme what is on, chosen or pressed has an outline of its own
+   (contrastActiveBorder); in the others --active-border is transparent. */
+.icon-button[aria-pressed="true"],
+.segmented button[aria-pressed="true"],
+.picker-option[aria-selected="true"] {
+  outline: 1px solid var(--active-border);
+  outline-offset: -1px;
+}

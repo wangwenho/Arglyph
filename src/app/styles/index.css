@@ -1,0 +1,16 @@
+/* The app's styles, one file per part. The order matters: the variables first,
+   the narrow-panel rules last. (The dev page's own are in src/dev/dev.css,
+   loaded by src/dev/main.tsx, not by the extension.) */
+@import "./tokens.css";
+@import "./base.css";
+@import "./controls.css";
+@import "./toolbar.css";
+@import "./stats.css";
+@import "./grid.css";
+@import "./zoom.css";
+@import "./text.css";
+@import "./scrollbar.css";
+@import "./inspector.css";
+@import "./help.css";
+@import "./tooltip.css";
+@import "./responsive.css";

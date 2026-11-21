@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "es2023",
+    "module": "nodenext",
+    "lib": ["ES2023"],
+    "types": ["node"],
+    "skipLibCheck": true,
+
+    /* What Node runs itself: the build tools' config files and scripts/, which
+       Node 24 runs as TypeScript by stripping the types. Checked, not emitted.
+       nodenext resolves imports the way Node does (explicit extensions). */
+    "moduleResolution": "nodenext",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
+
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true
+  },
+  "include": [
+    "vite.config.ts",
+    "vite.webview.config.ts",
+    "vite.extension.config.ts",
+    "scripts/**/*.ts",
+    "scripts/**/*.cts"
+  ],
+  "exclude": ["scripts/e2e.ts", "scripts/e2e/**", "scripts/bench.ts"]
+}

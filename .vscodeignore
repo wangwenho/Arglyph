@@ -1,0 +1,14 @@
+# An allowlist: everything stays out of the .vsix except what runs and what
+# the Marketplace and the licenses ask for. A new file in the repository is
+# therefore left out until it is named here. `pnpm exec vsce ls
+# --no-dependencies` shows what would be shipped.
+**
+!package.json
+!README.md
+!CHANGELOG.md
+!LICENSE
+!THIRD_PARTY_NOTICES
+!assets/package/icon.png
+!out/extension.cjs
+!out/webview/webview.js
+!out/webview/webview.css

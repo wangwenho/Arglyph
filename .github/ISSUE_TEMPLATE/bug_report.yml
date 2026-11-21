@@ -1,0 +1,47 @@
+name: Bug report
+description: Report something in Arglyph that does not work or shows a font wrongly.
+title: "[Bug] "
+labels: [bug]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what you saw instead. Screenshots help.
+    validations:
+      required: true
+  - type: input
+    id: font
+    attributes:
+      label: Font
+      description: Name, format (`.ttf` or `.otf`) and where to get it. Do not attach fonts whose license does not allow sharing.
+      placeholder: Noto Sans TC Regular, .otf, https://fonts.google.com/noto/specimen/Noto+Sans+TC
+    validations:
+      required: true
+  - type: input
+    id: arglyph-version
+    attributes:
+      label: Arglyph version
+      description: Shown in the Extensions view.
+      placeholder: 1.0.0
+    validations:
+      required: true
+  - type: input
+    id: vscode-version
+    attributes:
+      label: VS Code version
+      description: "Help > About (Code > About Visual Studio Code on macOS)."
+      placeholder: 1.101.0
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - macOS
+        - Windows
+        - Linux
+        - Other
+    validations:
+      required: true

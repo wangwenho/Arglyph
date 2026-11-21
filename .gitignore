@@ -1,0 +1,16 @@
+# Dependencies and build output
+node_modules
+out
+*.vsix
+
+# Test fonts (`pnpm fetch:fixtures` downloads them)
+test/fixtures/fonts/
+
+# Editor and OS files; the shared run and build settings stay
+.vscode/*
+!.vscode/launch.json
+!.vscode/tasks.json
+.DS_Store
+
+# Private notes (spec, architecture map, to-do): not published
+docs/

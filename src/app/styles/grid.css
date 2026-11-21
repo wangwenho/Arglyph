@@ -1,0 +1,65 @@
+/* The grid: a canvas behind a transparent scroll container, and its empty state. */
+
+.grid-host {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  background: var(--bg);
+}
+
+/* The canvas sits behind the scroll container, which is transparent: the
+   scrollbar (an overlay one on macOS takes no width) then paints over the grid
+   instead of under it. The container still receives all pointer events. */
+#grid-viewport {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: auto;
+  border: var(--viewport-border) solid var(--border);
+  /* The inspector has a line of its own on this side. */
+  border-right: 0;
+}
+
+/* The scroll container takes the keyboard focus (arrow keys move the selection).
+   The selected card's ring is the focus indicator, so no outline around the box. */
+#grid-viewport:focus {
+  outline: none;
+}
+
+#grid-canvas {
+  position: absolute;
+  top: var(--viewport-border);
+  left: var(--viewport-border);
+  pointer-events: none;
+}
+
+/* Why the grid is empty, in the middle of it. Only the button takes the pointer:
+   the rest must not get between the user and the scrollbar. */
+.grid-empty {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  text-align: center;
+  pointer-events: none;
+}
+
+.grid-empty > .button {
+  pointer-events: auto;
+  margin-top: var(--space-2);
+}
+
+.grid-empty-title {
+  margin: 0;
+  font-size: var(--font-size-control);
+  font-weight: 600;
+}
+
+.grid-empty-detail {
+  margin: 0;
+  color: var(--fg-muted);
+}

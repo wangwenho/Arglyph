@@ -1,0 +1,28 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run Extension",
+      "type": "extensionHost",
+      "request": "launch",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--disable-extensions",
+        "${workspaceFolder}/test/fixtures/fonts"
+      ],
+      "outFiles": ["${workspaceFolder}/out/**/*.cjs"],
+      "preLaunchTask": "build"
+    },
+    {
+      "name": "Run Extension (with my extensions)",
+      "type": "extensionHost",
+      "request": "launch",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "${workspaceFolder}/test/fixtures/fonts"
+      ],
+      "outFiles": ["${workspaceFolder}/out/**/*.cjs"],
+      "preLaunchTask": "build"
+    }
+  ]
+}

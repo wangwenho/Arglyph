@@ -1,0 +1,203 @@
+/* The line under the toolbar: what the font has of the chosen block, and the legend for the grid's colors. */
+
+/* The line under the toolbar: coverage of the chosen block. */
+.stats {
+  flex: none;
+  box-sizing: border-box;
+  height: var(--stats-height);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: 0 var(--space-3);
+  border-bottom: 1px solid var(--border);
+  font-size: var(--font-size-small);
+  font-variant-numeric: tabular-nums;
+  color: var(--fg-muted);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* What Missing looks like: the part of the bar that is not filled, and its
+   edge. Made from the theme's text and background colors, not from a button
+   color (button.secondaryBackground is nearly the editor background in many
+   dark themes, and then the bar has no visible length). Declared on .app, not
+   on .stats, because the inspector's swatch uses them too, and not on :root so
+   that the dev page's body class can still change --fg and --bg. */
+.app {
+  --track: color-mix(in srgb, var(--fg) 20%, var(--bg));
+  --track-edge: var(
+    --edge-guarded,
+    color-mix(in srgb, var(--fg) 55%, var(--bg))
+  );
+}
+
+.stats-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--fg);
+  font-weight: 600;
+}
+
+/* Words in the warning color: the theme's own, darkened where it is not readable
+   at this size (theme.ts sets --warning-text). */
+.stats-undrawn,
+.status-undrawn {
+  color: var(--warning-text, var(--warning));
+}
+
+/* What the search found; the hint is for a number that was meant as a code point. */
+.stats-search {
+  flex: none;
+  color: var(--fg);
+}
+
+.stats-hint {
+  flex: none;
+  color: var(--fg-muted);
+}
+
+/* One row of parts that add up to the block: Drawn, Blank, Undrawn, and what is
+   left over (the track) is Missing. The swatches in front of the numbers use the
+   same colors, so they are the legend. */
+.coverage-bar {
+  position: relative;
+  display: flex;
+  margin-left: auto;
+  flex: 1 1 120px;
+  min-width: 32px;
+  max-width: 160px;
+  box-sizing: border-box;
+  height: 8px;
+  border: 1px solid var(--track-edge);
+  /* A mark, like the swatches: half the radius, or at this height it is a pill. */
+  border-radius: calc(var(--radius) / 2);
+  overflow: hidden;
+  background: var(--track);
+}
+
+.coverage-bar > div {
+  flex: none;
+}
+
+.coverage-bar-drawn,
+.swatch-drawn {
+  background: var(--drawn-mark, var(--state-drawn));
+}
+
+/* Blank is an empty frame, dashed, as its cells are in the grid; in the bar,
+   where a frame has no room, it is dashes. */
+.coverage-bar-blank {
+  background: repeating-linear-gradient(
+    90deg,
+    var(--drawn-mark, var(--state-drawn)) 0 2px,
+    transparent 2px 4px
+  );
+  opacity: 0.7;
+}
+
+.swatch-blank {
+  box-sizing: border-box;
+  border: 1px dashed var(--drawn-mark, var(--state-drawn));
+  background: transparent;
+}
+
+/* Diagonal lines in the warning color, like the cards of undrawn glyphs. */
+.coverage-bar-undrawn,
+.swatch-undrawn {
+  background:
+    repeating-linear-gradient(
+      135deg,
+      var(--warning-mark, var(--state-undrawn)) 0 1.5px,
+      transparent 1.5px 4px
+    ),
+    color-mix(
+      in srgb,
+      var(--warning-mark, var(--state-undrawn)) 22%,
+      transparent
+    );
+}
+
+.swatch-undrawn {
+  box-shadow: inset 0 0 0 1px
+    color-mix(
+      in srgb,
+      var(--warning-mark, var(--state-undrawn)) 80%,
+      transparent
+    );
+}
+
+.swatch-missing {
+  background: var(--track);
+  outline: 1px solid var(--track-edge);
+  outline-offset: -1px;
+}
+
+/* A state that is also a button (it shows just those glyphs). */
+.stat-button {
+  padding: 0 var(--space-1);
+  margin: 0 calc(var(--space-1) * -1);
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* Its words keep the color of its state (Undrawn is the warning). */
+.stat-button:not(.stats-undrawn) {
+  color: inherit;
+}
+
+.stat-button:hover {
+  background: var(--button-bg);
+}
+
+.stat-button[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--fg) 10%, transparent);
+  outline: 1px solid var(--active-border);
+  outline-offset: -1px;
+}
+
+.stat-button:focus-visible {
+  outline: 1px solid var(--accent);
+}
+
+.stat {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* Between the states and the flag: Clipped is not a state, a glyph of any state
+   can have it. */
+.stats-divider {
+  flex: none;
+  align-self: stretch;
+  margin: var(--space-2) calc(var(--space-2) * -1);
+  border-left: 1px solid var(--border);
+}
+
+.stat-share {
+  opacity: 0.75;
+}
+
+.swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: calc(var(--radius) / 2);
+}
+
+/* The triangle in the corner of a clipped glyph's cell, as a legend: the same
+   shape and color as the one the grid draws: --clipped-mark is the theme's color
+   after the contrast guard (src/canvas/theme.ts), not the raw --glyph-clipped. */
+.clip-mark {
+  display: inline-block;
+  flex: none;
+  width: 9px;
+  height: 9px;
+  margin-right: var(--space-1);
+  background: var(--clipped-mark, var(--glyph-clipped));
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+}

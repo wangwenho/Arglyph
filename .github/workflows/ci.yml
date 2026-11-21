@@ -1,0 +1,85 @@
+# The same commands as on your machine, run by GitHub on every push to main and on
+# every pull request: a fresh Linux computer with nothing on it, so it installs the
+# packages, fetches the test fonts, and runs every check there is.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# One run per branch at a time: a newer push cancels the older run.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      # The pnpm version is the one package.json names (packageManager).
+      - uses: pnpm/action-setup@v6
+
+      # The Node version is the one .node-version names; `cache: pnpm` keeps
+      # pnpm's downloaded packages between runs.
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # The browser the e2e drives, and the libraries it needs on Linux.
+      - run: pnpm exec playwright install --with-deps chromium
+
+      # The test fonts: three downloads (checked against a SHA-256) and one made
+      # here. GitHub sets CI=true, so a missing font fails the run instead of
+      # skipping its checks.
+      - run: pnpm fetch:fixtures
+
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm e2e:host
+      - run: pnpm e2e
+
+      # Builds the extension the way a release does and makes the .vsix, so a
+      # packaging problem shows up here and not on release day.
+      - run: pnpm package
+      - uses: actions/upload-artifact@v7
+        with:
+          name: arglyph-vsix
+          path: "*.vsix"
+          if-no-files-found: error
+
+  # The same checks on Windows, where paths, line endings and the packaging can
+  # behave differently. Lint and typecheck run once, on Linux.
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      # Windows checks files out with CRLF line endings by default; the tests
+      # compare text files byte for byte, so keep LF.
+      - run: git config --global core.autocrlf false
+
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install chromium
+      - run: pnpm fetch:fixtures
+
+      - run: pnpm test
+      - run: pnpm e2e:host
+      - run: pnpm e2e
+      - run: pnpm package

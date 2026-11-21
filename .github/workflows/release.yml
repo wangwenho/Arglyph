@@ -1,0 +1,131 @@
+# Checks, packages and publishes Arglyph.
+#
+# - Run it by hand (Actions > Release > Run workflow): the checks and the .vsix
+#   only. Nothing is published, so this is the way to try the workflow.
+# - Push a tag such as v1.0.0: the same, and then, once someone approves the
+#   `release` environment, the .vsix goes to the VS Code Marketplace and a
+#   GitHub release is created.
+#
+# The Marketplace publish uses Trusted Publishing: no token is stored anywhere.
+# Its policy names this file and the `release` environment, so renaming either
+# one breaks publishing until the policy is changed too.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+# One release at a time, and a started one is never cancelled halfway.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      # The whole history, so the tag can be checked against main below.
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      # A tag publishes what is on main and what package.json says, nothing else.
+      - name: Check the tag
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          version=$(node -p "require('./package.json').version")
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match package.json version $version"
+            exit 1
+          fi
+          git fetch origin main
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::Tag $GITHUB_REF_NAME is not on main"
+            exit 1
+          fi
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+
+      # GitHub sets CI=true, so a missing test font fails the run.
+      - run: pnpm fetch:fixtures
+
+      # The same checks as ci.yml, so a release is never less tested than a PR.
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm e2e:host
+      - run: pnpm e2e
+
+      - run: pnpm package
+
+      # The one file that is published, and the one to upload by hand if the
+      # automatic publish ever fails.
+      - uses: actions/upload-artifact@v7
+        with:
+          name: arglyph-vsix
+          path: "*.vsix"
+          if-no-files-found: error
+
+  publish:
+    # Only a tag publishes; a manual run stops after `build`.
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # The environment holds the approval step and is named in the Marketplace
+    # policy.
+    environment: release
+    permissions:
+      contents: read
+      # Lets the job ask GitHub for the identity token the Marketplace checks.
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      # Installs the vsce that pnpm-lock.yaml pins.
+      - run: pnpm install --frozen-lockfile
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: arglyph-vsix
+
+      # --skip-duplicate makes a rerun harmless: a version the Marketplace
+      # already has is left alone instead of failing the job.
+      - run: pnpm exec vsce publish --oidc --packagePath arglyph-*.vsix --skip-duplicate
+
+  github-release:
+    needs: publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: arglyph-vsix
+
+      # The notes come from the merged PRs and commits, not from CHANGELOG.md.
+      - name: Create the GitHub release
+        run: gh release create "$GITHUB_REF_NAME" arglyph-*.vsix --repo "$GITHUB_REPOSITORY" --verify-tag --title "$GITHUB_REF_NAME" --generate-notes
+        env:
+          GH_TOKEN: ${{ github.token }}

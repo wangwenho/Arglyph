@@ -1,0 +1,20 @@
+/* The tooltip (Tooltips.tsx): the theme's hover widget. Placed by script, so it
+   starts out of sight until it has been measured. */
+
+.tooltip {
+  position: fixed;
+  z-index: 10;
+  max-width: min(320px, calc(100vw - 2 * var(--space-2)));
+  box-sizing: border-box;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--vscode-editorHoverWidget-border, var(--menu-border));
+  border-radius: var(--radius);
+  font-size: var(--font-size-small);
+  line-height: 1.4;
+  white-space: pre-line;
+  color: var(--vscode-editorHoverWidget-foreground, var(--fg));
+  background: var(--vscode-editorHoverWidget-background, var(--bg));
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.25);
+  pointer-events: none;
+  visibility: hidden;
+}

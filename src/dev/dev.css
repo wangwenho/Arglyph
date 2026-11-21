@@ -1,0 +1,41 @@
+/* Only for the dev page (src/dev): it has no VS Code to provide the theme, and a
+   fixed height so `pnpm bench` draws the same rows every time. */
+
+/* The dev page has no VS Code to provide the theme: light by default,
+   dark with `?theme=dark` (which adds the class VS Code would add). */
+body:not(.in-webview) {
+  color-scheme: light;
+}
+
+body.vscode-dark:not(.in-webview) {
+  color-scheme: dark;
+  --fg: #cccccc;
+  --fg-muted: #9d9d9d;
+  --bg: #1e1e1e;
+  --panel-bg: #252526;
+  --border: #3c3c3c;
+  --button-bg: #3a3d41;
+  --button-bg-hover: #45494e;
+  --button-fg: #cccccc;
+  --link: #3794ff;
+}
+
+/* Fixed grid height for the dev page, so `pnpm bench` draws the same number of
+   rows as it did before the toolbar existed (602 = 600 content + 2 border). */
+.dev-page .app {
+  height: calc(var(--toolbar-height) + var(--stats-height) + 602px);
+}
+
+/* Dev-only render timings (see dev/perf-stats.ts). Bottom left, so it does not
+   cover the toolbar buttons. */
+#stats {
+  position: fixed;
+  bottom: 8px;
+  left: 8px;
+  padding: 4px 8px;
+  font:
+    12px ui-monospace,
+    monospace;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+}

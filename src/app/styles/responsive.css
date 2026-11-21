@@ -1,0 +1,49 @@
+/* Narrow panels. Last, so that it wins over the rules above. */
+
+/* The stats line drops what the toolbar already says, then what matters least. */
+@media (max-width: 720px) {
+  .stats-title {
+    display: none;
+  }
+}
+
+/* Narrower than a wide editor: the dropdowns say enough without their names. */
+@media (max-width: 720px) {
+  .field-label,
+  .number-unit {
+    display: none;
+  }
+}
+
+/* A narrow panel (a split editor): keep the controls, drop the extras. */
+@media (max-width: 560px) {
+  .stats-secondary {
+    display: none;
+  }
+
+  /* Narrower number controls and switch: the title says what a box is. */
+  .toolbar-number {
+    width: 34px;
+  }
+
+  .step-button {
+    width: 18px;
+  }
+
+  .toolbar-spacer {
+    flex-basis: 0;
+  }
+
+  .segmented button {
+    padding: 0 var(--space-2);
+  }
+
+  .search-field {
+    flex-basis: 120px;
+    min-width: 72px;
+  }
+
+  .stats {
+    gap: var(--space-3);
+  }
+}

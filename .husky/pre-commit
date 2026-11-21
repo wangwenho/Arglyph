@@ -1,0 +1,4 @@
+# Biome on the staged files only, so it stays fast. It does not fix anything:
+# `pnpm format` does that, and a partly staged file is never rewritten behind
+# your back. The full checks run on push and in CI.
+pnpm exec biome check --staged --no-errors-on-unmatched
