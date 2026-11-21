@@ -1,0 +1,160 @@
+/* The text view: one surface to type on, in the font. */
+
+/* Over the grid, like the zoom view; the grid stays underneath. */
+.text-view {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  background: var(--glyph-card-bg);
+}
+
+/* Why the text is not in the font (yet): loading, or the browser refused it. */
+.text-banner {
+  flex: none;
+  margin: 0;
+  padding: var(--space-2) var(--space-5);
+  border-bottom: 1px solid var(--border);
+  color: var(--fg-muted);
+}
+
+/* The scrolling area and the scrollbar over it. */
+.text-scroll-frame {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+.text-scroll {
+  position: absolute;
+  inset: 0;
+  overflow: auto;
+}
+
+/* The font and size come from the element (CSSOM): the webview's policy allows
+   no style attribute in the markup. */
+.text-stack {
+  position: relative;
+  box-sizing: border-box;
+  min-height: 100%;
+  color: var(--glyph-fg);
+}
+
+/* The box and the copy behind it must lay the text out the same way, to the
+   pixel: everything that moves a character is the same, or inherited. */
+.text-mirror,
+.text-input {
+  margin: 0;
+  padding: var(--space-4) var(--space-5);
+  border: 0;
+  box-sizing: border-box;
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  writing-mode: inherit;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  tab-size: 8;
+}
+
+/* The copy is what is seen: the text in the font, with the marks. It is in the
+   flow, so that it is what makes the surface as tall as the text. */
+.text-mirror {
+  position: relative;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* The box is only for what a box does: the caret, the selection, the keys and
+   the IME. Its own text is not drawn: for a character the font lacks it would be
+   one the browser took from another font, and the copy leaves such a character
+   blank. It lies over the copy with the same size, and has nothing of its own
+   to scroll. */
+.text-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  resize: none;
+  overflow: hidden;
+  background: transparent;
+  color: transparent;
+  caret-color: var(--glyph-fg);
+  outline: none;
+}
+
+/* The selection must let the text below show through. */
+.text-input::selection {
+  color: transparent;
+  background: color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.text-input::placeholder {
+  color: var(--fg-muted);
+}
+
+/* A character the font cannot show as it should is blank, as in the grid, with
+   a mark. Missing: the font has no glyph, so a gray block and a dashed line.
+   Undrawn: the font has the character but no outline, so there is nothing to
+   see anyway; a warning tint shows where it is. */
+.text-mark {
+  color: transparent;
+}
+
+.text-mark-missing {
+  text-decoration: underline dashed var(--fg-muted);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.2em;
+  background: color-mix(in srgb, var(--fg) 16%, transparent);
+}
+
+.text-mark-undrawn {
+  text-decoration: underline dashed var(--warning);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.2em;
+  background: color-mix(in srgb, var(--warning) 30%, transparent);
+}
+
+/* With Cmd/Ctrl held, the character a click would look closer at is drawn like a
+   link and the pointer is a hand. A blank one (its text is transparent) gets the
+   link color as a tint instead. */
+.text-linking .text-input {
+  cursor: pointer;
+}
+
+.text-link {
+  color: var(--link);
+}
+
+.text-mark.text-link {
+  background: color-mix(in srgb, var(--link) 35%, transparent);
+}
+
+/* Vertical text: columns from the right, each running down. The
+   scroll container has the writing mode too, so that it starts at the right and
+   scrolls sideways; the surface is as tall as the window (that is where a column
+   ends) and as wide as the columns need. The box and its copy lay the text out
+   the same way as before, since they inherit it. */
+.text-vertical .text-scroll,
+.text-vertical .text-stack {
+  writing-mode: vertical-rl;
+}
+
+.text-vertical .text-stack {
+  height: 100%;
+  min-height: 0;
+  min-width: 100%;
+}
+
+.text-vertical .text-mirror,
+.text-vertical .text-input {
+  padding: var(--space-5) var(--space-4);
+}
+
+/* The letters an IME is still building (the Bopomofo), underlined as the box
+   would, since its own text is not drawn. */
+.text-composing {
+  text-decoration: underline;
+}

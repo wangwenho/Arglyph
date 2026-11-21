@@ -1,0 +1,183 @@
+/* The panel at the right: the selected glyph and the font. */
+
+/* The frame holds the panel and its scrollbar, which lies over it. */
+.inspector-frame {
+  position: relative;
+  flex: none;
+  display: flex;
+  box-sizing: border-box;
+  width: var(--inspector-width);
+  border-left: 1px solid var(--border);
+  background: var(--panel-bg);
+}
+
+/* The handle on the left edge: wider than the line it lies over, so it is easy to
+   take, and a thicker line shows on it when the pointer is. */
+.inspector-sash {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -3px;
+  z-index: 6;
+  width: 6px;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.inspector-sash::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 2px;
+  width: 2px;
+  background: var(--vscode-sash-hoverBorder, var(--accent));
+  opacity: 0;
+  transition: opacity 0.1s 0.15s;
+}
+
+.inspector-sash:hover::after,
+.inspector-sash:focus-visible::after,
+.inspector-sash[data-dragging]::after {
+  opacity: 1;
+}
+
+.inspector-sash:focus-visible {
+  outline: none;
+}
+
+body.vscode-reduce-motion .inspector-sash::after {
+  transition: none;
+}
+
+.inspector {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+}
+
+.inspector-section {
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--border);
+}
+
+.inspector h2 {
+  display: inline;
+  margin: 0;
+  font-size: var(--font-size-label);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.inspector section > h2 {
+  display: block;
+  margin-bottom: var(--space-2);
+}
+
+/* The folding arrow is drawn here, like the pickers' (the browser's is a black
+   triangle). */
+.inspector summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  list-style: none;
+}
+
+.inspector summary::-webkit-details-marker {
+  display: none;
+}
+
+.inspector summary::before {
+  content: "";
+  flex: none;
+  width: 5px;
+  height: 5px;
+  margin: 0 2px;
+  border-right: 1px solid var(--fg-muted);
+  border-bottom: 1px solid var(--fg-muted);
+  transform: rotate(-45deg);
+  transition: transform 0.12s;
+}
+
+.inspector details[open] > summary::before {
+  transform: rotate(45deg);
+}
+
+body.vscode-reduce-motion .inspector summary::before {
+  transition: none;
+}
+
+.inspector summary {
+  margin-bottom: var(--space-2);
+  cursor: pointer;
+}
+
+.placeholder {
+  margin: 0;
+  color: var(--fg-muted);
+}
+
+/* The state in the inspector, with the swatch the stats line uses. */
+.status-value {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+}
+
+/* What the status means, under the details of the selected glyph. */
+.state-hint {
+  margin: var(--space-2) 0 0;
+  color: var(--fg-muted);
+  font-size: var(--font-size-small);
+  line-height: 1.4;
+}
+
+/* Keep in sync with CANVAS_SIZE in GlyphPreview.tsx. */
+.glyph-preview {
+  display: block;
+  width: 224px;
+  height: 224px;
+  margin: 0 auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.glyph-label {
+  margin: var(--space-3) 0;
+  font: 600 var(--font-size-title) / 1.2 var(--mono);
+  text-align: center;
+}
+
+.rows {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--space-1) var(--space-3);
+  margin: 0;
+}
+
+.rows dt {
+  color: var(--fg-muted);
+}
+
+.rows dd {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* The quieter half of a fact: the length in em, how the points divide. Space, not
+   brackets, sets it apart. */
+.rows .note {
+  margin-left: var(--space-2);
+  color: var(--fg-muted);
+  font-size: var(--font-size-small);
+  font-variant-numeric: tabular-nums;
+}
+
+.button-row {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}

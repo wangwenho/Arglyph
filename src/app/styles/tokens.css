@@ -1,0 +1,196 @@
+/* The variables everything else uses: the app's colors from the VS Code theme,
+   and the colors of the glyph grid, derived from them. */
+
+/* The app's chrome (toolbar, inspector) follows the VS Code theme through the
+   --vscode-* variables a webview provides; the fallbacks are for the browser
+   dev page. The glyph grid itself keeps its own light look. */
+:root {
+  --fg: var(--vscode-foreground, #3b3b3b);
+  --fg-muted: var(--vscode-descriptionForeground, #6b6b76);
+  --bg: var(--vscode-editor-background, #ffffff);
+  --panel-bg: var(--vscode-sideBar-background, #f5f5f7);
+  /* High-contrast themes give one border color for everything (contrastBorder):
+     lines and the edges of controls then use it, and what is on or chosen gets
+     contrastActiveBorder (see controls.css). */
+  --border: var(--vscode-contrastBorder, var(--vscode-panel-border, #e2e2e8));
+  --control-border: var(
+    --vscode-contrastBorder,
+    var(--vscode-input-border, var(--border))
+  );
+  --menu-border: var(
+    --vscode-contrastBorder,
+    var(--vscode-dropdown-border, var(--border))
+  );
+  --active-border: var(--vscode-contrastActiveBorder, transparent);
+  --accent: var(--vscode-focusBorder, #2563eb);
+  --link: var(--vscode-textLink-foreground, #2563eb);
+  --button-bg: var(--vscode-button-secondaryBackground, #e7e7ec);
+  --button-bg-hover: var(--vscode-button-secondaryHoverBackground, #dcdce3);
+  --button-fg: var(--vscode-button-secondaryForeground, #1f1f24);
+  --mono: var(--vscode-editor-font-family, ui-monospace, Menlo, monospace);
+  --sans: var(--vscode-font-family, system-ui, "Segoe UI", sans-serif);
+
+  /* Width of the frame around the scroll container. The canvas is offset by the
+     same amount so it lines up with the container's content box. */
+  --viewport-border: 1px;
+  --toolbar-height: 36px;
+  --stats-height: 28px;
+  --warning: var(--vscode-editorWarning-foreground, #b45309);
+  --inspector-width: 300px;
+
+  /* The scale everything is measured in: spacing in four steps, one height for
+     every control, three sizes of text (and a monospace one for code points).
+     Colors are the theme's own, or a fixed share of its text color over its
+     background; the three state colors are the only ones that mean something. */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  /* Corners: controls and the small tooltip are --radius; what floats over the
+     page as a surface of its own (panels, the help window) is --radius-lg. Marks
+     (the swatches) are half of --radius. */
+  --radius: 4px;
+  --radius-lg: 6px;
+  --control-height: 24px;
+  --font-size-control: var(--vscode-font-size, 13px);
+  --font-size-small: 12px;
+  --font-size-label: 11px;
+  /* The one larger text: the code point over the inspector's rows. */
+  --font-size-title: 16px;
+  /* Room a field keeps at its sides for an icon, and the side of the small
+     button that clears it. */
+  --field-icon-inset: 26px;
+  --small-button-size: 18px;
+  /* Drawn is blue, whatever the theme's focus color is (it is orange in some):
+     charts.blue is defined by every theme. Undrawn is the theme's warning. */
+  --state-drawn: var(--vscode-charts-blue, var(--accent));
+  --state-undrawn: var(--warning);
+
+  font: var(--vscode-font-size, 13px) / 1.4 var(--sans);
+  color: var(--fg);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Colors of the glyph grid and the glyph preview.
+
+   They are derived from the variables the VS Code theme provides, so the grid
+   looks like part of the user's theme instead of a separate design: the card is
+   the editor background (a little deeper on a dark theme), the glyph is the
+   editor foreground, the label strip and the lines are the two mixed, and the
+   selection uses the theme's focus color. The values after the commas are used
+   when VS Code gives no variable (the dev page). src/canvas/theme.ts reads
+   the result and replaces any color that is not readable enough (core/palette.ts),
+   so an unusual theme can never make the glyphs hard to see.
+
+   Only the inputs differ between light and dark; the recipes are written once.
+   VS Code puts one of these classes on <body>: vscode-light, vscode-dark,
+   vscode-high-contrast (dark) and vscode-high-contrast-light. The hover tint
+   and the baseline are made from the selection color in code, not here. */
+body {
+  --glyph-bg: var(--vscode-editor-background, #fcfcfd);
+  --glyph-fg: var(--vscode-editor-foreground, #14171f);
+  /* How the card differs from the editor background: nothing on a light theme. */
+  --glyph-depth: white 0%;
+
+  --glyph-card-bg: color-mix(in srgb, var(--glyph-bg), var(--glyph-depth));
+  --glyph-label-bg: color-mix(
+    in srgb,
+    var(--glyph-card-bg),
+    var(--glyph-fg) 6%
+  );
+  --glyph-divider: color-mix(in srgb, var(--glyph-card-bg), var(--glyph-fg) 9%);
+  /* High-contrast themes provide a border color; use it. */
+  --glyph-frame: var(
+    --vscode-contrastBorder,
+    color-mix(in srgb, var(--glyph-card-bg), var(--glyph-fg) 26%)
+  );
+  --glyph-fill: var(--glyph-fg);
+  --glyph-label-text: color-mix(
+    in srgb,
+    var(--glyph-fg) 88%,
+    var(--glyph-label-bg)
+  );
+  --glyph-selection: var(
+    --vscode-contrastActiveBorder,
+    var(--vscode-focusBorder, #2563eb)
+  );
+  --glyph-clipped: var(--vscode-editorWarning-foreground, #d64545);
+  /* One hue for one meaning, so no two things on the canvas share a color:
+     blue is the glyph's own geometry (the outline, its points and handles),
+     purple is spacing (the advance edges, the bearings), green is the bounds
+     of the ink, and gray is structure (baseline, em square, metrics). The
+     hues are the theme's chart colors; the hex values are VS Code's own
+     defaults, for a theme that sets none. */
+  --glyph-outline: var(--vscode-charts-blue, #1a85ff);
+  --glyph-handle: color-mix(
+    in srgb,
+    var(--glyph-outline) 60%,
+    var(--glyph-card-bg)
+  );
+  /* The anchor of every line of text: the strongest gray, not a hue. */
+  --glyph-baseline: color-mix(
+    in srgb,
+    var(--glyph-card-bg),
+    var(--glyph-fg) 80%
+  );
+  /* How the guides are dashed: "none" is a solid line, "3 3" a dash and a gap. */
+  --glyph-dash-baseline: none;
+  --glyph-dash-square: none;
+  --glyph-dash-advance: 6 3;
+  --glyph-dash-bbox: none;
+  --glyph-dash-metrics: 1 3;
+  --glyph-square: color-mix(in srgb, var(--glyph-card-bg), var(--glyph-fg) 42%);
+  --glyph-advance: var(--vscode-charts-purple, #652d90);
+  --glyph-bounds: var(--vscode-charts-green, #388a34);
+  /* Metrics are quiet: the text color, mixed down into the card. */
+  --glyph-metrics: color-mix(
+    in srgb,
+    var(--glyph-card-bg),
+    var(--glyph-fg) 56%
+  );
+  /* The two states with no ink, as the stats line shows them: Blank is an empty
+     frame in the color of Drawn, Missing is a filled gray cell. */
+  --glyph-blank: var(--state-drawn);
+  --glyph-missing: color-mix(
+    in srgb,
+    var(--glyph-card-bg),
+    var(--glyph-fg) 16%
+  );
+}
+
+body.vscode-dark,
+body.vscode-high-contrast:not(.vscode-high-contrast-light) {
+  --glyph-bg: var(--vscode-editor-background, #0f1116);
+  --glyph-fg: var(--vscode-editor-foreground, #e6e8ee);
+  /* A dark card sits a little deeper than the editor, like a well. */
+  --glyph-depth: black 10%;
+  --glyph-divider: color-mix(
+    in srgb,
+    var(--glyph-card-bg),
+    var(--glyph-fg) 11%
+  );
+  --glyph-label-text: color-mix(
+    in srgb,
+    var(--glyph-fg) 92%,
+    var(--glyph-label-bg)
+  );
+  --glyph-square: color-mix(in srgb, var(--glyph-card-bg), var(--glyph-fg) 48%);
+  --glyph-metrics: color-mix(
+    in srgb,
+    var(--glyph-card-bg),
+    var(--glyph-fg) 66%
+  );
+  --glyph-selection: var(
+    --vscode-contrastActiveBorder,
+    var(--vscode-focusBorder, #6ea8fe)
+  );
+  --glyph-clipped: var(--vscode-editorWarning-foreground, #ef7b7b);
+  --glyph-outline: var(--vscode-charts-blue, #3794ff);
+  --glyph-advance: var(--vscode-charts-purple, #b180d7);
+  --glyph-bounds: var(--vscode-charts-green, #89d185);
+}

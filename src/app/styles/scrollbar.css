@@ -1,0 +1,96 @@
+/* A scrollbar over the content, like VS Code's (OverlayScrollbar.tsx): the
+   element that scrolls hides its own, and takes the whole width. */
+
+.overlay-scroll {
+  scrollbar-width: none;
+}
+
+.overlay-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Over the content, and out of the way of the pointer except on the bars. */
+.overlay-scrollbar {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  --thumb: var(
+    --vscode-scrollbarSlider-background,
+    color-mix(in srgb, var(--fg) 30%, transparent)
+  );
+  --thumb-hover: var(
+    --vscode-scrollbarSlider-hoverBackground,
+    color-mix(in srgb, var(--fg) 45%, transparent)
+  );
+  --thumb-active: var(
+    --vscode-scrollbarSlider-activeBackground,
+    color-mix(in srgb, var(--fg) 60%, transparent)
+  );
+}
+
+.overlay-track {
+  position: absolute;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.overlay-track[hidden] {
+  display: none;
+}
+
+.overlay-track[data-axis="vertical"] {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 12px;
+}
+
+.overlay-track[data-axis="horizontal"] {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 12px;
+}
+
+/* A pill inside the track, as VS Code's own: the track is wider than the thumb,
+   so the thumb has a margin on every side. */
+.overlay-thumb {
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  border-radius: var(--radius);
+  background: var(--thumb);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+body.vscode-reduce-motion .overlay-thumb {
+  transition: none;
+}
+
+.overlay-track[data-axis="vertical"] > .overlay-thumb {
+  left: 2px;
+  width: 8px;
+}
+
+.overlay-track[data-axis="horizontal"] > .overlay-thumb {
+  top: 2px;
+  height: 8px;
+}
+
+/* While it scrolls, while the pointer is on it, and while it is held. */
+.overlay-scrollbar[data-visible="true"] .overlay-thumb,
+.overlay-track:hover > .overlay-thumb,
+.overlay-scrollbar[data-dragging] .overlay-thumb {
+  opacity: 1;
+}
+
+.overlay-track:hover > .overlay-thumb {
+  background: var(--thumb-hover);
+}
+
+.overlay-scrollbar[data-dragging] .overlay-thumb {
+  background: var(--thumb-active);
+}

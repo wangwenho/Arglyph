@@ -1,0 +1,140 @@
+/* The zoom view: one glyph over the whole grid area. */
+
+/* On top of the grid, which stays where it is underneath: its scroll position
+   and selection are what the user comes back to. */
+.zoom {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: var(--glyph-card-bg);
+}
+
+.zoom-surface {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  cursor: grab;
+  /* The page must not scroll or select under a drag. */
+  touch-action: none;
+  user-select: none;
+}
+
+.zoom-surface:focus {
+  outline: none;
+}
+
+.zoom-surface > canvas {
+  display: block;
+}
+
+/* The overview of the glyph: bottom left, opposite the zoom controls. */
+.zoom-overview {
+  position: absolute;
+  left: var(--space-3);
+  bottom: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  touch-action: none;
+}
+
+.zoom-overview[hidden] {
+  display: none;
+}
+
+.zoom-bar {
+  position: absolute;
+  right: var(--space-3);
+  bottom: var(--space-3);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--panel-bg);
+}
+
+.zoom-level {
+  min-width: 44px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.zoom-fit {
+  flex: none;
+}
+
+.zoom-fit:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* The layer switches in the inspector. */
+.layer-list {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A rule between how the glyph is drawn (Fill, Outline, Points) and the lines
+   laid over it (Layout, Metrics, Bounding box). */
+.layer-group-start {
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--border);
+}
+
+.layer-list label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+}
+
+/* The check boxes are drawn, in the colors VS Code gives its own: the browser's
+   are white in a dark theme. */
+.layer-list input[type="checkbox"] {
+  appearance: none;
+  display: inline-grid;
+  place-content: center;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  border: 1px solid var(--vscode-checkbox-border, var(--control-border));
+  border-radius: var(--radius);
+  color: var(--vscode-checkbox-foreground, var(--fg));
+  background: var(
+    --vscode-checkbox-background,
+    var(--vscode-input-background, var(--bg))
+  );
+  cursor: pointer;
+}
+
+.layer-list input[type="checkbox"]::after {
+  content: "";
+  width: 8px;
+  height: 4px;
+  margin-top: -2px;
+  border-bottom: 1.5px solid currentColor;
+  border-left: 1.5px solid currentColor;
+  transform: rotate(-45deg);
+  opacity: 0;
+}
+
+.layer-list input[type="checkbox"]:checked::after {
+  opacity: 1;
+}
+
+.layer-list input[type="checkbox"]:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* The key's look is the shared one (help.css). Not the mono font there: the
+   letter O would look like the 0 that fits the view. */
+.layer-key {
+  margin-left: auto;
+}

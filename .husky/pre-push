@@ -1,0 +1,2 @@
+# What is quick enough to wait for before a push; e2e is left to CI.
+pnpm typecheck && pnpm test

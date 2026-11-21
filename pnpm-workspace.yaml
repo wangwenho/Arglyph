@@ -1,0 +1,10 @@
+allowBuilds:
+  # The install script of vsce-sign is only used for signature verification;
+  # `vsce package` does not need it, so it is not run.
+  '@vscode/vsce-sign': false
+
+# Security fixes for packages that only @vscode/vsce pulls in (publishing
+# tools, never shipped in the .vsix). Remove once vsce depends on these itself.
+overrides:
+  minimatch: ^11.0.1
+  '@azure/msal-node': ^7.1.0

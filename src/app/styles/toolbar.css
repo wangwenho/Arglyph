@@ -1,0 +1,529 @@
+/* The toolbar: dropdowns, search, the zoom slider, the inspector toggle, notices. */
+
+.toolbar {
+  flex: none;
+  box-sizing: border-box;
+  height: var(--toolbar-height);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-2) 0 var(--space-3);
+  border-bottom: 1px solid var(--border);
+}
+
+/* "Block [dropdown]", "Show [dropdown]": a control with its name in front. The
+   name goes first when the panel is narrow (the control has an aria-label). */
+.field {
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+/* A number control keeps its size; it is the dropdowns that give way. */
+.field:has(> .number-field) {
+  flex: none;
+}
+
+.field-label {
+  flex: none;
+  font-size: var(--font-size-small);
+  color: var(--fg-muted);
+}
+
+/* The toolbar dropdowns (Unicode block, which glyphs to show). VS Code's
+   dropdown colors, with the button colors as the fallback for the browser
+   dev page. */
+.toolbar-select {
+  min-width: 88px;
+  /* As wide as the longest option, so the "n / total" is never cut off and the
+     toolbar does not shift when another block is picked; it gives way first
+     when the panel is narrow. */
+  flex: 0 1 auto;
+  max-width: 340px;
+  height: var(--control-height);
+  padding: 0 var(--space-1);
+  border: 1px solid var(--menu-border);
+  border-radius: var(--radius);
+  color: var(--vscode-dropdown-foreground, var(--fg));
+  background: var(--vscode-dropdown-background, var(--button-bg));
+  font: inherit;
+  font-size: var(--font-size-control);
+}
+
+.toolbar-select:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* Never less than a little room before the inspector's button. */
+.toolbar-spacer {
+  flex: 1 0 8px;
+}
+
+/* The search box. VS Code's input colors, with the page colors as the fallback
+   for the dev page. */
+.search-field {
+  position: relative;
+  display: flex;
+  flex: 0 1 260px;
+  min-width: 96px;
+  color: var(--vscode-input-placeholderForeground, var(--fg-muted));
+}
+
+.search-field > svg {
+  position: absolute;
+  top: 50%;
+  left: 8px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* The clear button, in the right end of the box. */
+.search-clear {
+  position: absolute;
+  top: 50%;
+  right: var(--space-1);
+  display: grid;
+  place-items: center;
+  width: var(--small-button-size);
+  height: var(--small-button-size);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  color: var(--fg-muted);
+  background: transparent;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.search-clear:hover {
+  color: var(--fg);
+  background: var(--button-bg);
+}
+
+.search-clear:focus-visible {
+  outline: 1px solid var(--accent);
+}
+
+.toolbar-search::-webkit-search-cancel-button {
+  display: none;
+}
+
+.toolbar-search {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  height: var(--control-height);
+  padding: 0 var(--field-icon-inset);
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius);
+  color: var(--vscode-input-foreground, var(--fg));
+  background: var(--vscode-input-background, var(--bg));
+  font: inherit;
+  font-size: var(--font-size-control);
+}
+
+.toolbar-search::placeholder {
+  color: var(--vscode-input-placeholderForeground, var(--fg-muted));
+}
+
+.toolbar-search:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: -1px;
+}
+
+/* Fades in and out: `data-visible` is switched off by a timer. */
+.toolbar-notice {
+  font-size: var(--font-size-small);
+  color: var(--fg-muted);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.toolbar-notice[data-visible="true"] {
+  opacity: 1;
+}
+
+.toolbar-notice-error {
+  color: var(--vscode-errorForeground, #c72e2e);
+}
+
+/* VS Code adds this class when the user asked for less motion. */
+body.vscode-reduce-motion .toolbar-notice {
+  transition: none;
+}
+
+/* The controls that belong to the grid. They take no room of their own, so
+   their children are laid out in the toolbar as if they were its own. */
+.toolbar-controls {
+  display: contents;
+}
+
+/* display: contents would win over the hidden attribute. */
+.toolbar-controls[hidden] {
+  display: none;
+}
+
+/* A number control, [ − 35 + ] px: the box and its two buttons are one bordered
+   piece, in the colors VS Code gives its inputs. Its own spin arrows are the
+   browser's and light, whatever the theme: they are hidden, the buttons do it. */
+.number-field {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--fg-muted);
+  font-size: var(--font-size-small);
+}
+
+.number-group {
+  display: flex;
+  align-items: stretch;
+  box-sizing: border-box;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  height: var(--control-height);
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--vscode-input-background, var(--bg));
+}
+
+.number-group:focus-within {
+  outline: 1px solid var(--accent);
+  outline-offset: -1px;
+}
+
+.toolbar-number {
+  width: 44px;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 0 2px;
+  border: 0;
+  color: var(--vscode-input-foreground, var(--fg));
+  background: transparent;
+  font: inherit;
+  font-size: var(--font-size-control);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.toolbar-number::-webkit-inner-spin-button,
+.toolbar-number::-webkit-outer-spin-button {
+  margin: 0;
+  appearance: none;
+}
+
+.toolbar-number:focus-visible {
+  outline: none;
+}
+
+.toolbar-number::placeholder {
+  color: var(--vscode-input-placeholderForeground, var(--fg-muted));
+}
+
+/* − and +, as the zoom view's buttons are. */
+.step-button {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  padding: 0;
+  border: 0;
+  color: var(--fg-muted);
+  background: transparent;
+  cursor: pointer;
+}
+
+.step-button:hover:not(:disabled) {
+  color: var(--fg);
+  background: var(--button-bg);
+}
+
+.step-button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.step-button:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: -1px;
+}
+
+.number-unit {
+  user-select: none;
+}
+
+/* Grid | Text: two buttons that read as one control, the pressed one filled. */
+.segmented {
+  display: flex;
+  flex: none;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  height: var(--control-height);
+  box-sizing: border-box;
+  border: 1px solid var(--menu-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.segmented button {
+  align-self: stretch;
+  padding: 0 var(--space-3);
+  border: 0;
+  font: inherit;
+  font-size: var(--font-size-control);
+  color: var(--fg-muted);
+  background: transparent;
+  cursor: pointer;
+}
+
+/* Buttons that hold an icon, not a word (the direction of the text). */
+.segmented-icons button {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--space-2);
+}
+
+.segmented button + button {
+  border-left: 1px solid var(--menu-border);
+}
+
+.segmented button:hover {
+  color: var(--fg);
+}
+
+.segmented button[aria-pressed="true"] {
+  color: var(--button-fg);
+  background: var(--button-bg);
+}
+
+.segmented button:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: -1px;
+}
+
+/* Groups: what belongs together is 8 px apart, the groups 16 px; the view switch
+   is set off from the rest by a line. */
+.toolbar-divider {
+  flex: none;
+  width: 1px;
+  height: var(--space-4);
+  border: 0;
+  background: var(--border);
+  margin: 0 var(--space-1);
+}
+
+.toolbar-group {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-3);
+  margin-left: var(--space-2);
+}
+
+/* Show is shorter than Block. */
+.picker.state-filter {
+  flex-basis: 200px;
+}
+
+/* A list with no filter box is as wide as its button, or a little wider. */
+.picker-popup-compact {
+  width: max(100%, 240px);
+}
+
+/* The pickers (Block, Show): a button that opens a panel, with a filter box and
+   groups or without (PickerPanel.tsx). The button has the same width whatever it says, so
+   that the toolbar does not move when another block is picked. */
+.picker {
+  position: relative;
+  display: flex;
+  flex: 0 1 260px;
+  min-width: 88px;
+}
+
+.picker-trigger {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-1);
+  padding: 0 var(--space-2);
+  text-align: left;
+  cursor: pointer;
+}
+
+.picker-trigger-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.picker-popup {
+  position: absolute;
+  top: calc(100% + var(--space-1));
+  left: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  width: 360px;
+  max-width: calc(100vw - var(--space-4));
+  max-height: min(60vh, 420px);
+  box-sizing: border-box;
+  padding: var(--space-1);
+  gap: var(--space-1);
+  border: 1px solid var(--menu-border);
+  border-radius: var(--radius-lg);
+  color: var(--vscode-dropdown-foreground, var(--fg));
+  background: var(--vscode-dropdown-background, var(--bg));
+  box-shadow: 0 4px 12px var(--vscode-widget-shadow, rgba(0, 0, 0, 0.25));
+}
+
+.picker-search {
+  flex: none;
+  box-sizing: border-box;
+  width: 100%;
+  height: var(--control-height);
+  padding: 0 var(--space-2);
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius);
+  color: var(--vscode-input-foreground, var(--fg));
+  background: var(--vscode-input-background, var(--bg));
+  font: inherit;
+  font-size: var(--font-size-control);
+}
+
+.picker-search:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: -1px;
+}
+
+.picker-list-frame {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+.picker-list {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+}
+
+.picker-group,
+.picker-option {
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: var(--control-height);
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius);
+  font-size: var(--font-size-control);
+}
+
+.picker-group[hidden],
+.picker-option[hidden] {
+  display: none;
+}
+
+/* A plane: a heading that folds its blocks open and shut. */
+.picker-group {
+  border: 0;
+  color: var(--fg-muted);
+  background: transparent;
+  font: inherit;
+  font-size: var(--font-size-small);
+  text-align: left;
+  cursor: pointer;
+}
+
+.picker-group:hover {
+  color: var(--fg);
+}
+
+/* The arrow points right when the plane is shut and down when it is open, like
+   the inspector's sections. */
+.block-chevron {
+  flex: none;
+  transition: transform 0.12s;
+}
+
+.block-chevron-open {
+  transform: rotate(90deg);
+}
+
+body.vscode-reduce-motion .block-chevron {
+  transition: none;
+}
+
+.picker-group-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.picker-option {
+  cursor: pointer;
+}
+
+/* The block the keys or the pointer are on, and the one that is chosen. */
+.picker-option[data-active="true"] {
+  background: var(
+    --vscode-list-hoverBackground,
+    color-mix(in srgb, var(--fg) 10%, transparent)
+  );
+}
+
+.picker-option[aria-selected="true"] {
+  color: var(--vscode-list-activeSelectionForeground, var(--fg));
+  background: var(
+    --vscode-list-activeSelectionBackground,
+    color-mix(in srgb, var(--accent) 25%, transparent)
+  );
+}
+
+/* Shown, but not to be picked (Missing, before a block is chosen). */
+.picker-option[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* The blocks line up under the name of their plane (arrow 10px + gap). */
+.picker-group-box > .picker-option {
+  padding-left: calc(var(--space-2) + 10px + var(--space-2));
+}
+
+.picker-option-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.picker-option-count {
+  flex: none;
+  color: var(--fg-muted);
+  font-size: var(--font-size-small);
+  font-variant-numeric: tabular-nums;
+}
+
+.picker-none {
+  margin: var(--space-2);
+  color: var(--fg-muted);
+}
