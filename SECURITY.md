@@ -8,7 +8,7 @@ Only the latest release of Arglyph receives security fixes.
 
 Report it privately, not in a public issue:
 
-1. Open the [Security tab](https://github.com/wangwenho/vscode-arglyph/security) of this repository.
+1. Open the [Security tab](https://github.com/wangwenho/Arglyph/security) of this repository.
 2. Choose **Report a vulnerability** and describe what you found.
 
 Include the Arglyph and VS Code versions and, if a particular font file triggers the problem, where to get that file. Do not attach fonts whose license does not allow sharing.
@@ -23,4 +23,4 @@ Arglyph only reads the font file you open. It makes no network requests, and its
 - Anything that lets a font file or its text run code, read other files or reach the network.
 - A flaw in how the webview is isolated from the rest of VS Code.
 
-Problems in VS Code itself, or in fonts that merely look wrong, are better reported to the VS Code project or as a normal [issue](https://github.com/wangwenho/vscode-arglyph/issues).
+Problems in VS Code itself, or in fonts that merely look wrong, are better reported to the VS Code project or as a normal [issue](https://github.com/wangwenho/Arglyph/issues).

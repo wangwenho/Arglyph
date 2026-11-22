@@ -332,6 +332,9 @@ export async function zoom({ fonts: { notoSans, notoSerif } }: Context) {
       `${withoutPoints} -> ${withPoints} pixels for ${on} on-curve points`,
     );
     await app.page.keyboard.press("p");
+    // Let the points go before the plain picture is taken: it is what the
+    // checks below compare with, and a slow runner has not redrawn yet.
+    await app.page.waitForTimeout(250);
 
     // The Bounding box layer draws a dashed box: the picture changes with B, and
     // is the same again when it is switched off.

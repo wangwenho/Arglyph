@@ -1,12 +1,12 @@
 <div align="center">
 
-![Arglyph](assets/readme/banner.png)
+![Arglyph banner](assets/readme/banner.png)
 
 <h1 align="center">Arglyph: CJK Font Viewer for VS Code</h1>
 
-[![Release](https://img.shields.io/github/v/release/wangwenho/vscode-arglyph?style=for-the-badge&labelColor=8250DF&color=FAFAFD)](https://github.com/wangwenho/vscode-arglyph/releases)
+[![Release](https://img.shields.io/github/v/release/wangwenho/Arglyph?style=for-the-badge&labelColor=8250DF&color=FAFAFD)](https://github.com/wangwenho/Arglyph/releases)
 [![Installs](https://vsmarketplacebadges.dev/installs-short/wangwenho.arglyph.svg?style=for-the-badge&labelColor=8250DF&color=FAFAFD)](https://marketplace.visualstudio.com/items?itemName=wangwenho.arglyph)
-[![License](https://img.shields.io/github/license/wangwenho/vscode-arglyph?style=for-the-badge&labelColor=8250DF&color=FAFAFD)](LICENSE)
+[![License](https://img.shields.io/github/license/wangwenho/Arglyph?style=for-the-badge&labelColor=8250DF&color=FAFAFD)](LICENSE)
 
 </div>
 
@@ -22,7 +22,7 @@ Browse every glyph of a CJK font in a smooth grid, zoom in to its outlines and c
 
 ### Grid
 
-![Grid view](assets/readme/grid-light.png)
+![Arglyph grid view in the light theme](assets/readme/grid-light.png)
 
 Filter by Unicode block, or search by character, code point or range. Every cell shows the state of its glyph: drawn, blank (such as a space), undrawn (an empty glyph where Unicode expects ink) or missing (not in the font).
 
@@ -30,7 +30,7 @@ Filter by Unicode block, or search by character, code point or range. Every cell
 
 ### Zoom
 
-![Zoom view](assets/readme/zoom-light.png)
+![Arglyph zoom view in the light theme](assets/readme/zoom-light.png)
 
 Nine layers you can toggle: fill, outline, points and handles, layout, side bearings, metrics, bounding box, rulers and grid. Every line is labeled on the canvas with its value in font units.
 
@@ -38,7 +38,7 @@ Nine layers you can toggle: fill, outline, points and handles, layout, side bear
 
 ### Text
 
-![Text view](assets/readme/text-light.png)
+![Arglyph text view in the light theme](assets/readme/text-light.png)
 
 Write horizontally or vertically, with adjustable line height and letter spacing. A character the font lacks is marked as missing.
 
@@ -46,7 +46,7 @@ Write horizontally or vertically, with adjustable line height and letter spacing
 
 ### Theme
 
-![Grid view in Dark Modern](assets/readme/grid-dark.png)
+![Arglyph grid view in the dark theme](assets/readme/grid-dark.png)
 
 Arglyph follows your VS Code theme (light, dark or high contrast) and adjusts glyph colors so they stay readable.
 
@@ -80,7 +80,7 @@ pnpm e2e              # end-to-end checks in headless Chromium
 pnpm package          # build the .vsix
 ```
 
-`pnpm lint` and `pnpm typecheck` run the other checks. Press `F5` in VS Code to run the extension in a development host with the test fonts in the Explorer. Bugs and ideas are welcome in the [issues](https://github.com/wangwenho/vscode-arglyph/issues).
+`pnpm lint` and `pnpm typecheck` run the other checks. Press `F5` in VS Code to run the extension in a development host with the test fonts in the Explorer. Bugs and ideas are welcome in the [issues](https://github.com/wangwenho/Arglyph/issues).
 
 ## Acknowledgements
 
