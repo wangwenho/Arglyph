@@ -1,6 +1,8 @@
 # The same commands as on your machine, run by GitHub on every push to main and on
-# every pull request: a fresh Linux computer with nothing on it, so it installs the
-# packages, fetches the test fonts, and runs every check there is.
+# every pull request: a fresh computer with nothing on it, so it installs the
+# packages, fetches the test fonts, and runs every check there is. It does so
+# once per operating system, because paths, line endings, keyboard shortcuts and
+# the packaging can behave differently on each.
 name: CI
 
 on:
@@ -17,10 +19,29 @@ permissions:
   contents: read
 
 jobs:
-  check:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
+  # Every system runs the same tests, end-to-end checks and packaging.
+  #
+  # The job `name` (linux, windows, macos) is what the `main branch` ruleset
+  # lists as a required status check. Renaming one here means renaming it there
+  # too, or pull requests wait forever for a check that no longer exists.
+  verify:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      # A failure on one system must not hide the result on the others.
+      fail-fast: false
+      matrix:
+        include:
+          - { name: linux, os: ubuntu-latest }
+          - { name: windows, os: windows-latest }
+          - { name: macos, os: macos-latest }
     steps:
+      # Windows checks files out with CRLF line endings by default; the tests
+      # compare text files byte for byte, so keep LF.
+      - if: runner.os == 'Windows'
+        run: git config --global core.autocrlf false
+
       - uses: actions/checkout@v7
 
       # The pnpm version is the one package.json names (packageManager).
@@ -35,16 +56,25 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # The browser the e2e drives, and the libraries it needs on Linux.
-      - run: pnpm exec playwright install --with-deps chromium
+      # The browser the e2e drives. Only Linux also needs the system libraries
+      # it depends on; Windows and macOS already have them.
+      - if: runner.os == 'Linux'
+        run: pnpm exec playwright install --with-deps chromium
+      - if: runner.os != 'Linux'
+        run: pnpm exec playwright install chromium
 
       # The test fonts: three downloads (checked against a SHA-256) and one made
       # here. GitHub sets CI=true, so a missing font fails the run instead of
       # skipping its checks.
       - run: pnpm fetch:fixtures
 
-      - run: pnpm lint
-      - run: pnpm typecheck
+      # Lint and typecheck do not depend on the system, so they run once, on
+      # Linux, instead of three times.
+      - if: runner.os == 'Linux'
+        run: pnpm lint
+      - if: runner.os == 'Linux'
+        run: pnpm typecheck
+
       - run: pnpm test
       - run: pnpm e2e:host
       - run: pnpm e2e
@@ -52,34 +82,11 @@ jobs:
       # Builds the extension the way a release does and makes the .vsix, so a
       # packaging problem shows up here and not on release day.
       - run: pnpm package
-      - uses: actions/upload-artifact@v7
+
+      # Only the Linux build is kept: it is the one release.yml publishes.
+      - if: runner.os == 'Linux'
+        uses: actions/upload-artifact@v7
         with:
           name: arglyph-vsix
           path: "*.vsix"
           if-no-files-found: error
-
-  # The same checks on Windows, where paths, line endings and the packaging can
-  # behave differently. Lint and typecheck run once, on Linux.
-  windows:
-    runs-on: windows-latest
-    timeout-minutes: 30
-    steps:
-      # Windows checks files out with CRLF line endings by default; the tests
-      # compare text files byte for byte, so keep LF.
-      - run: git config --global core.autocrlf false
-
-      - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v7
-        with:
-          node-version-file: .node-version
-          cache: pnpm
-
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm exec playwright install chromium
-      - run: pnpm fetch:fixtures
-
-      - run: pnpm test
-      - run: pnpm e2e:host
-      - run: pnpm e2e
-      - run: pnpm package
