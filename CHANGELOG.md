@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1 (2026-11-22)
+
+- The project links now point to the renamed repository, `wangwenho/Arglyph`.
+- The README images have consistent descriptions.
+
 ## 1.0.0 (2026-11-21)
 
 First release.

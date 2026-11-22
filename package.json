@@ -1,6 +1,6 @@
 {
   "name": "arglyph",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Browse, preview and inspect CJK fonts glyph by glyph.",
   "license": "MIT",
   "type": "module",
