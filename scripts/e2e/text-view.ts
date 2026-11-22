@@ -375,7 +375,20 @@ export async function textView({
     );
     await app.page.mouse.move(minus.x + 5, minus.y + 5);
     await app.page.mouse.down();
-    await app.page.waitForTimeout(1000);
+    // Stepping from 44px to 12px takes about 0.9 s (400 ms before it repeats,
+    // then 70 ms a step), so a fixed 1 s wait fails on a slow runner. Wait for
+    // the smallest size instead, then hold a little longer to see it stop.
+    await app.page.waitForFunction(
+      () =>
+        (
+          document.querySelector(
+            'button[aria-label="Decrease font size"]',
+          ) as HTMLButtonElement
+        ).disabled,
+      undefined,
+      { timeout: 5000 },
+    );
+    await app.page.waitForTimeout(300);
     await app.page.mouse.up();
     check(
       "A held button keeps stepping, down to the smallest size, where it stops",
